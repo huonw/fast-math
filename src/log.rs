@@ -4,11 +4,8 @@ use std::f32 as f;
 /// Compute a fast approximation of the base-2 logarithm of `x`.
 ///
 /// The maximum relative error across all positive f32s (including
-/// denormals) is less than 0.022. The maximum absolute error in the
-/// region `[0.75, 1.5)` is less than 0.009: the equivalent bound for
-/// numbers outside this region can be obtained by dividing by the
-/// power of two that brings it into the region (for example, the
-/// maximum absolute error near 3.9 will be 0.009/0.25 == 0.036).
+/// denormals) is less than 0.022. The maximum absolute error is less
+/// than 0.009.
 ///
 /// If `x` is negative, or NaN, `log2` returns `NaN`.
 ///
@@ -58,11 +55,7 @@ fn log2_exp_0(signif: u32) -> f32 {
 /// required (at the expense of some speed).
 ///
 /// The maximum relative error across all valid input is less than
-/// 0.022. The maximum absolute error in the region `[0.75, 1.5)` is
-/// less than 0.009: the equivalent bound for numbers outside this
-/// region can be obtained by dividing by the power of two that brings
-/// it into the region (for example, the maximum absolute error near
-/// 3.9 will be 0.009/0.25 == 0.036).
+/// 0.022. The maximum absolute error is less than 0.009.
 ///
 /// |               | Time (ns) |
 /// |--------------:|----------------|
