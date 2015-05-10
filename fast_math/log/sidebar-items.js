@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["log2","Compute a fast approximation of the base-2 logarithm of `x`."],["log2_raw","Compute a fast approximation of the base-2 logarithm of **positive, finite, non-denormal** `x`."]]});

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `fast_math` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, fast_math">
+
+    <title>fast_math - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'fast_math', ty: 'mod', relpath: '../'};</script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>fast_math</a><wbr></span><span class='out-of-band'><a href='stability.html'>[stability]</a> <span id='render-detail'>
+            <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-0' href='../src/fast_math/lib.rs.html#1-37'>[src]</a></span></h1>
+<div class='docblock'><p>Fast, approximate versions of mathematical functions.</p>
+
+<p>This crate includes implementations of &quot;expensive&quot; mathematical
+functions that are much faster, at the expense of some
+accuracy. All functions have good guarantees on accuracy to some
+degree (both relative and absolute).</p>
+
+<h1 id="installation" class='section-header'><a
+                           href="#installation">Installation</a></h1>
+<p>Add this to your Cargo.toml</p>
+
+<pre><code class="language-toml">[dependencies]
+fast-math = &quot;0.1&quot;
+</code></pre>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>let</span> <span class='ident'>x</span> <span class='op'>=</span> <span class='number'>10.4781</span>;
+<span class='kw'>let</span> <span class='ident'>approx</span> <span class='op'>=</span> <span class='ident'>fast_math</span>::<span class='ident'>log2</span>(<span class='ident'>x</span>);
+<span class='kw'>let</span> <span class='ident'>real</span> <span class='op'>=</span> <span class='ident'>x</span>.<span class='ident'>log2</span>();
+<span class='comment'>// they should be close</span>
+<span class='macro'>assert</span><span class='macro'>!</span>((<span class='ident'>approx</span> <span class='op'>-</span> <span class='ident'>real</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='number'>0.01</span>);
+</pre>
+</div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.log2.html'
+                               title='fast_math::log2'>log2</a></td>
+                        <td class='docblock short'><p>Compute a fast approximation of the base-2 logarithm of <code>x</code>.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.log2_raw.html'
+                               title='fast_math::log2_raw'>log2_raw</a></td>
+                        <td class='docblock short'><p>Compute a fast approximation of the base-2 logarithm of <strong>positive,
+finite, non-denormal</strong> <code>x</code>.</p>
+</td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "fast_math";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>
