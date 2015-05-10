@@ -1,0 +1,21 @@
+[package]
+name = "fast-math"
+version = "0.1.0"
+authors = ["Huon Wilson <dbau.pp@gmail.com>"]
+
+homepage = "https://github.com/huonw/fast-math"
+repository = "https://github.com/huonw/fast-math"
+documentation = "http://huonw.github.io/fast-math"
+license = "MIT/Apache-2.0"
+keywords = ["approximation", "relative-error", "mathematics","performance"]
+
+description = """
+Fast, approximate versions of mathematical functions. Includes `log2`.
+"""
+
+
+[dev-dependencies]
+quickcheck = "0.2"
+
+[features]
+unstable = []
