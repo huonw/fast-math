@@ -29,9 +29,10 @@
 #[cfg(all(test, feature = "unstable"))] extern crate test;
 
 pub use log::{log2, log2_raw};
+pub use atan::{atan_raw, atan, atan2};
 
 mod log;
-
+mod atan;
 
 #[doc(hidden)]
 pub mod float;
