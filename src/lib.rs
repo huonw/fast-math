@@ -24,9 +24,11 @@
 //! assert!((approx - real).abs() < 0.01);
 //! ```
 
+#![no_std]
 #![cfg_attr(all(test, feature = "unstable"), feature(test))]
 #[cfg(test)] extern crate quickcheck;
 #[cfg(all(test, feature = "unstable"))] extern crate test;
+#[cfg(test)] #[cfg_attr(test, macro_use)] extern crate std;
 
 pub use log::{log2, log2_raw};
 

@@ -1,5 +1,5 @@
 use float;
-use std::f32 as f;
+use core::f32 as f;
 
 /// Compute a fast approximation of the base-2 logarithm of `x`.
 ///

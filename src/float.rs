@@ -1,4 +1,4 @@
-use std::mem;
+use core::mem;
 
 const SIGN: usize = 1;
 const EXP: usize = 8;
