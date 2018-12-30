@@ -1,6 +1,6 @@
 # `fast-math`
 
-[![Build Status](https://travis-ci.org/huonw/fast-math.png)](https://travis-ci.org/huonw/fast-math) [![Coverage Status](https://coveralls.io/repos/huonw/fast-math/badge.svg?branch=master)](https://coveralls.io/r/huonw/fast-math?branch=master)
+[![Build Status](https://travis-ci.org/huonw/fast-math.png)](https://travis-ci.org/huonw/fast-math) [![codecov](https://codecov.io/gh/huonw/fast-math/branch/master/graph/badge.svg)](https://codecov.io/gh/huonw/fast-math)
 
 Fast, approximate versions of mathematical functions. Includes `log2`.
 
