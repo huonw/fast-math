@@ -4,5 +4,5 @@
 
 Fast, approximate versions of mathematical functions. Includes `log2`.
 
-[Documentation](http://huonw.github.io/fast-math),
+[Documentation](https://docs.rs/fast-math),
 [crates.io](https://crates.io/crates/fast-math).
