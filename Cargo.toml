@@ -16,6 +16,7 @@ Fast, approximate versions of mathematical functions. Includes `log2`.
 
 [dev-dependencies]
 quickcheck = "0.2"
+ieee754 = "0.2"
 
 [features]
 unstable = []
