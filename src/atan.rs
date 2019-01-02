@@ -1,4 +1,24 @@
-use std::f32::consts::PI;
+use core::f32::consts::PI;
+
+fn signum(x: f32) -> f32 {
+    if x < 0.0 {
+        -1.0
+    } else if x == 0.0 {
+        0.0
+    } else if x > 0.0 {
+        1.0
+    } else {
+        // x is a NaN
+        x
+    }
+}
+fn abs(x: f32) -> f32 {
+    if x < 0.0 {
+        -x
+    } else {
+        x
+    }
+}
 
 /// Compute a fast approximation of the inverse tangent for `|x| < 1`.
 ///
@@ -11,7 +31,7 @@ pub fn atan_raw(x: f32) -> f32 {
     // http://www-labs.iro.umontreal.ca/~mignotte/IFT2425/Documents/EfficientApproximationArctgFunction.pdf.
     const N1: f32 = PI / 4.;
     const N2: f32 = 0.273;
-    (N1 + N2 - N2 * x.abs()) * x
+    (N1 + N2 - N2 * abs(x)) * x
 }
 
 /// Compute a fast approximation of the arctangent of `x`.
@@ -21,10 +41,10 @@ pub fn atan_raw(x: f32) -> f32 {
 /// See also `atan_raw` which only works on `|x| <= 1`, but is faster.
 #[inline]
 pub fn atan(x: f32) -> f32 {
-    if x.abs() <= 1. {
+    if abs(x) <= 1. {
         atan_raw(x)
     } else {
-        x.signum() * PI / 2. - atan_raw(1./x)
+        signum(x) * PI / 2. - atan_raw(1./x)
     }
 }
 
@@ -48,11 +68,11 @@ pub fn atan2(y: f32, x: f32) -> f32 {
             (false, false) => -PI,
         };
     }
-    if x.abs() > y.abs() {
+    if abs(x) > abs(y) {
         let z = if y.is_finite() || x.is_finite() {
             y / x
         } else {
-            y.signum() * x.signum()
+            signum(y) * signum(x)
         };
         if x > 0. {
             atan_raw(z)
@@ -66,7 +86,7 @@ pub fn atan2(y: f32, x: f32) -> f32 {
         let z = if x.is_finite() || y.is_finite() {
             x / y
         } else {
-            x.signum() * y.signum()
+            signum(x) * signum(y)
         };
         if y > 0. {
             -atan_raw(z) + PI / 2.
