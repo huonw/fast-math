@@ -19,6 +19,7 @@ pub fn decompose(x: f32) -> (u32, u32, u32) {
      mask!(SIGNIF =>))
 }
 
+#[inline(always)]
 pub fn recompose(sign: u32, exp: u32, signif: u32) -> f32 {
     debug_assert!(sign <= 1);
     debug_assert!(exp <= 255);
