@@ -1,3 +1,4 @@
+use core::f32::INFINITY;
 use core::f32::consts::{PI, FRAC_PI_2, FRAC_PI_4};
 use float::{abs, signum, flip_sign_nonnan};
 
@@ -35,46 +36,33 @@ pub fn atan(x: f32) -> f32 {
 /// The maximum absolute error across all f32s is less than 0.0038.
 #[inline]
 pub fn atan2(y: f32, x: f32) -> f32 {
-    if x == 0. {
-        if y > 0. {
-            return FRAC_PI_2;
-        } else if y < 0. {
-            return -FRAC_PI_2;
-        } else if y.is_nan() {
-            return y;
-        }
-        return match (y.is_sign_positive(), x.is_sign_positive()) {
-            (true, true) => 0.,
-            (true, false) => PI,
-            (false, true) => -0.,
-            (false, false) => -PI,
-        };
-    }
-    if abs(x) > abs(y) {
-        let z = if y.is_finite() || x.is_finite() {
-            y / x
+    if abs(y) < abs(x) {
+        // x is not NaN and y is finite, so there should be no NaNs
+        // around
+        debug_assert!(!x.is_nan() && !y.is_nan() && !(y / x).is_nan());
+
+        let bias = if x > 0.0 { 0.0 } else { PI };
+        flip_sign_nonnan(y, bias) + atan_raw(y / x)
+    } else if x == 0. {
+        // x is non-NaN
+        if y == 0. {
+            let bias = if x.is_sign_positive() { 0.0 } else { PI };
+            flip_sign_nonnan(y, bias)
         } else {
-            signum(y) * signum(x)
-        };
-        if x > 0. {
-            atan_raw(z)
-        } else if y >= 0. {
-            atan_raw(z) + PI
-        } else {
-            atan_raw(z) - PI
+            // y may be NaN, but signum handles that
+            signum(y) * FRAC_PI_2
         }
+    } else if abs(y) == INFINITY && abs(x) == INFINITY {
+        // x and y are both infinite, meaning: not NaN, can't be
+        // divided, and the answer is statically obvious (some
+        // multiple of PI/4).
+        flip_sign_nonnan(y, FRAC_PI_2 - flip_sign_nonnan(x, FRAC_PI_4))
     } else {
-        // Use `atan(1/x) == sign(x) * pi / 2 - atan(x).
-        let z = if x.is_finite() || y.is_finite() {
-            x / y
-        } else {
-            signum(x) * signum(y)
-        };
-        if y > 0. {
-            -atan_raw(z) + FRAC_PI_2
-        } else {
-            -atan_raw(z) - FRAC_PI_2
-        }
+        // Either one x or y is NaN (propogates through atan_raw
+        // properly), or abs(y) >= abs(x) (meaning |r| = |y / x| >=
+        // 1). Use `atan(1/r) == sign(r) * pi / 2 - atan(r)`, but
+        // inline the 0 or PI `x` bias.
+        flip_sign_nonnan(y, FRAC_PI_2) - atan_raw(x / y)
     }
 }
 
