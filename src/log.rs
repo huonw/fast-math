@@ -147,39 +147,3 @@ mod tests {
         qc::quickcheck(prop as fn(u8, u16) -> bool)
     }
 }
-
-#[cfg(all(test, feature = "unstable"))]
-mod benches {
-    use test::{Bencher, black_box};
-
-    const TAB: &'static [f32] =
-        &[ 0.85708036,  2.43390621,  2.80163358,  2.55126348,  3.18046186,
-           2.88689427,  0.32215155,  0.07701401,  1.22922506,  0.4580259 ,
-           0.01257442,  4.23107197,  0.89538113,  1.65219582,  0.14632742,
-           1.68663984,  1.88125115,  2.16773942,  1.27461936,  1.03091265];
-
-    #[bench]
-    fn log2_full(b: &mut Bencher) {
-        b.iter(|| {
-            for &x in black_box(TAB) {
-                black_box(super::log2(x));
-            }
-        })
-    }
-    #[bench]
-    fn log2_raw(b: &mut Bencher) {
-        b.iter(|| {
-            for &x in black_box(TAB) {
-                black_box(super::log2_raw(x));
-            }
-        })
-    }
-    #[bench]
-    fn log2_std(b: &mut Bencher) {
-        b.iter(|| {
-            for &x in black_box(TAB) {
-                black_box(x.log2());
-            }
-        })
-    }
-}

@@ -4,12 +4,12 @@ matrix:
 
   include:
       - rust: nightly
-        env: UNSTABLE=1 COVERAGE=1
+        env: COVERAGE=1
         sudo: required
 
       - rust: nightly
         services: docker
-        env: TARGET=i686-unknown-linux-gnu UNSTABLE=1
+        env: TARGET=i686-unknown-linux-gnu
         sudo: required
         addons:
           apt:
