@@ -161,22 +161,18 @@ mod tests {
 
     #[test]
     fn atan2_edge_cases() {
-        assert_eq!(atan2(0., 0.), 0.);
-
-        assert_eq!(atan2(0., 0.), 0.);
-        assert_eq!(atan2(0., -0.), PI);
-        assert_eq!(atan2(-0., 0.), -0.);
-        assert_eq!(atan2(-0., -0.), -PI);
-
-        for &v in &[-1., 0., 1., f::INFINITY, f::NEG_INFINITY] {
-            assert!(atan2(f::NAN, v).is_nan());
-            assert!(atan2(v, f::NAN).is_nan());
+        let values = &[-2., -1., -0., 0., 1., 2., f::INFINITY, f::NEG_INFINITY, f::NAN];
+        for &x in values {
+            for &y in values {
+                let e = atan2(x, y);
+                let t = x.atan2(y);
+                assert_eq!(e.is_nan(), t.is_nan());
+                if !t.is_nan() {
+                    assert!((e - t).abs() < TOL ||
+                            (e - t - 2.0 * PI).abs() < TOL ||
+                            (e - t + 2.0 * PI).abs() < TOL);
+                }
+            }
         }
-        assert!(atan2(f::NAN, f::NAN).is_nan());
-
-        assert!((atan2(f::INFINITY, f::INFINITY) - 0.25 * PI).abs() < TOL);
-        assert!((atan2(f::INFINITY, f::NEG_INFINITY) - 0.75 * PI).abs() < TOL);
-        assert!((atan2(f::NEG_INFINITY, f::INFINITY) + 0.25 * PI).abs() < TOL);
-        assert!((atan2(f::NEG_INFINITY, f::NEG_INFINITY) + 0.75 * PI).abs() < TOL);
     }
 }
