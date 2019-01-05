@@ -10,18 +10,21 @@ pub fn abs(x: f32) -> f32 {
     recompose(0, e, m)
 }
 
+#[inline]
+pub fn flip_sign_nonnan(sign: f32, magnitude: f32) -> f32 {
+    let (s1, _, _) = decompose(sign);
+    let (s2, e2, m2) = decompose(magnitude);
+    recompose(s1 ^ s2, e2, m2)
+}
 /// The sign of `x`, +/-1.0 when `x` is not NaN (NB. this explicitly
 /// includes `x == 0`!), and NaN when `x` is NaN.
 #[inline]
 pub fn signum(x: f32) -> f32 {
-    let (s, _, _) = decompose(x);
-    let (_, e1, m1) = decompose(1.0);
-    let newbits = recompose(s, e1, m1);
-
+    let new = flip_sign_nonnan(x, 1.0);
     if x.is_nan() {
         x
     } else {
-        newbits
+        new
     }
 }
 
@@ -115,6 +118,18 @@ mod tests {
         assert_eq!(decompose(1.25), (0, 127, 0b010_0000_0000_0000_0000_0000));
         assert_eq!(decompose(-(2048.0 + 1024.0 + 1.0/4096.0)),
                    (1, 127 + 11, 0b100_0000_0000_0000_0000_0001));
+    }
 
+    #[test]
+    fn test_flip_sign_nonnan() {
+        assert_eq!(flip_sign_nonnan(2.0, 3.0), 3.0);
+        assert_eq!(flip_sign_nonnan(2.0, -3.0), -3.0);
+        assert_eq!(flip_sign_nonnan(-2.0, 3.0), -3.0);
+        assert_eq!(flip_sign_nonnan(-2.0, -3.0), 3.0);
+
+        assert_eq!(flip_sign_nonnan(1.0, f::INFINITY), f::INFINITY);
+        assert_eq!(flip_sign_nonnan(1.0, f::NEG_INFINITY), f::NEG_INFINITY);
+        assert_eq!(flip_sign_nonnan(-1.0, f::INFINITY), f::NEG_INFINITY);
+        assert_eq!(flip_sign_nonnan(-1.0, f::NEG_INFINITY), f::INFINITY);
     }
 }

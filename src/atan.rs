@@ -1,5 +1,5 @@
 use core::f32::consts::{PI, FRAC_PI_2, FRAC_PI_4};
-use float::{abs, signum};
+use float::{abs, signum, flip_sign_nonnan};
 
 /// Compute a fast approximation of the inverse tangent for `|x| < 1`.
 ///
@@ -21,10 +21,12 @@ pub fn atan_raw(x: f32) -> f32 {
 /// See also `atan_raw` which only works on `|x| <= 1`, but is faster.
 #[inline]
 pub fn atan(x: f32) -> f32 {
-    if abs(x) <= 1. {
-        atan_raw(x)
+    if abs(x) > 1.0 {
+        // if x is NaN, abs(x) is NaN, so the comparison can't succeed
+        debug_assert!(!x.is_nan());
+        flip_sign_nonnan(x, FRAC_PI_2) - atan_raw(1./x)
     } else {
-        signum(x) * FRAC_PI_2 - atan_raw(1./x)
+        atan_raw(x)
     }
 }
 
