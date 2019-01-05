@@ -5,6 +5,27 @@ const EXP: usize = 8;
 const SIGNIF: usize = 23;
 
 #[inline(always)]
+pub fn abs(x: f32) -> f32 {
+    let (_, e, m) = decompose(x);
+    recompose(0, e, m)
+}
+
+/// The sign of `x`, +/-1.0 when `x` is not NaN (NB. this explicitly
+/// includes `x == 0`!), and NaN when `x` is NaN.
+#[inline]
+pub fn signum(x: f32) -> f32 {
+    let (s, _, _) = decompose(x);
+    let (_, e1, m1) = decompose(1.0);
+    let newbits = recompose(s, e1, m1);
+
+    if x.is_nan() {
+        x
+    } else {
+        newbits
+    }
+}
+
+#[inline(always)]
 pub fn decompose(x: f32) -> (u32, u32, u32) {
     let bits: u32 = unsafe { mem::transmute(x) };
 
@@ -42,6 +63,32 @@ pub fn recompose(sign: u32, exp: u32, signif: u32) -> f32 {
 mod tests {
     use super::*;
     use quickcheck as qc;
+    use std::f32 as f;
+
+    #[test]
+    fn test_abs() {
+        assert_eq!(abs(0.0), 0.0);
+        assert_eq!(abs(1.0), 1.0);
+        assert_eq!(abs(-1.0), 1.0);
+        assert_eq!(abs(12.34), 12.34);
+        assert_eq!(abs(-12.34), 12.34);
+        assert_eq!(abs(f::INFINITY), f::INFINITY);
+        assert_eq!(abs(-f::INFINITY), f::INFINITY);
+        assert!(abs(f::NAN).is_nan());
+    }
+
+    #[test]
+    fn test_signum() {
+        assert_eq!(signum(0.0), 1.0);
+        assert_eq!(signum(-0.0), -1.0);
+        assert_eq!(signum(1.0), 1.0);
+        assert_eq!(signum(-1.0), -1.0);
+        assert_eq!(signum(12.34), 1.0);
+        assert_eq!(signum(-12.34), -1.0);
+        assert_eq!(signum(f::INFINITY), 1.0);
+        assert_eq!(signum(-f::INFINITY), -1.0);
+        assert!(signum(f::NAN).is_nan());
+    }
 
     #[test]
     fn round_trip() {

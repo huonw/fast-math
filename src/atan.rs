@@ -1,24 +1,5 @@
 use core::f32::consts::PI;
-
-fn signum(x: f32) -> f32 {
-    if x < 0.0 {
-        -1.0
-    } else if x == 0.0 {
-        0.0
-    } else if x > 0.0 {
-        1.0
-    } else {
-        // x is a NaN
-        x
-    }
-}
-fn abs(x: f32) -> f32 {
-    if x < 0.0 {
-        -x
-    } else {
-        x
-    }
-}
+use float::{abs, signum};
 
 /// Compute a fast approximation of the inverse tangent for `|x| < 1`.
 ///
