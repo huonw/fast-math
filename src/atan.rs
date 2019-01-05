@@ -1,4 +1,4 @@
-use core::f32::consts::PI;
+use core::f32::consts::{PI, FRAC_PI_2, FRAC_PI_4};
 use float::{abs, signum};
 
 /// Compute a fast approximation of the inverse tangent for `|x| < 1`.
@@ -10,9 +10,8 @@ use float::{abs, signum};
 pub fn atan_raw(x: f32) -> f32 {
     // Quadratic approximation recommended in
     // http://www-labs.iro.umontreal.ca/~mignotte/IFT2425/Documents/EfficientApproximationArctgFunction.pdf.
-    const N1: f32 = PI / 4.;
     const N2: f32 = 0.273;
-    (N1 + N2 - N2 * abs(x)) * x
+    (FRAC_PI_4 + N2 - N2 * abs(x)) * x
 }
 
 /// Compute a fast approximation of the arctangent of `x`.
@@ -25,7 +24,7 @@ pub fn atan(x: f32) -> f32 {
     if abs(x) <= 1. {
         atan_raw(x)
     } else {
-        signum(x) * PI / 2. - atan_raw(1./x)
+        signum(x) * FRAC_PI_2 - atan_raw(1./x)
     }
 }
 
@@ -36,9 +35,9 @@ pub fn atan(x: f32) -> f32 {
 pub fn atan2(y: f32, x: f32) -> f32 {
     if x == 0. {
         if y > 0. {
-            return PI / 2.;
+            return FRAC_PI_2;
         } else if y < 0. {
-            return -PI / 2.;
+            return -FRAC_PI_2;
         } else if y.is_nan() {
             return y;
         }
@@ -70,9 +69,9 @@ pub fn atan2(y: f32, x: f32) -> f32 {
             signum(x) * signum(y)
         };
         if y > 0. {
-            -atan_raw(z) + PI / 2.
+            -atan_raw(z) + FRAC_PI_2
         } else {
-            -atan_raw(z) - PI / 2.
+            -atan_raw(z) - FRAC_PI_2
         }
     }
 }
