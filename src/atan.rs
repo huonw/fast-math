@@ -1,6 +1,7 @@
 use core::f32::INFINITY;
 use core::f32::consts::{PI, FRAC_PI_2, FRAC_PI_4};
-use float::{abs, signum, flip_sign_nonnan};
+use float::{flip_sign_nonnan};
+use ieee754::Ieee754;
 
 /// Compute a fast approximation of the inverse tangent for `|x| < 1`.
 ///
@@ -12,7 +13,7 @@ pub fn atan_raw(x: f32) -> f32 {
     // Quadratic approximation recommended in
     // http://www-labs.iro.umontreal.ca/~mignotte/IFT2425/Documents/EfficientApproximationArctgFunction.pdf.
     const N2: f32 = 0.273;
-    (FRAC_PI_4 + N2 - N2 * abs(x)) * x
+    (FRAC_PI_4 + N2 - N2 * x.abs()) * x
 }
 
 /// Compute a fast approximation of the arctangent of `x`.
@@ -22,7 +23,7 @@ pub fn atan_raw(x: f32) -> f32 {
 /// See also `atan_raw` which only works on `|x| <= 1`, but is faster.
 #[inline]
 pub fn atan(x: f32) -> f32 {
-    if abs(x) > 1.0 {
+    if x.abs() > 1.0 {
         // if x is NaN, abs(x) is NaN, so the comparison can't succeed
         debug_assert!(!x.is_nan());
         flip_sign_nonnan(x, FRAC_PI_2) - atan_raw(1./x)
@@ -36,7 +37,7 @@ pub fn atan(x: f32) -> f32 {
 /// The maximum absolute error across all f32s is less than 0.0038.
 #[inline]
 pub fn atan2(y: f32, x: f32) -> f32 {
-    if abs(y) < abs(x) {
+    if y.abs() < x.abs() {
         // x is not NaN and y is finite, so there should be no NaNs
         // around
         debug_assert!(!x.is_nan() && !y.is_nan() && !(y / x).is_nan());
@@ -48,20 +49,21 @@ pub fn atan2(y: f32, x: f32) -> f32 {
         if y == 0. {
             let bias = if x.is_sign_positive() { 0.0 } else { PI };
             flip_sign_nonnan(y, bias)
+        } else if y.is_nan() {
+            y
         } else {
-            // y may be NaN, but signum handles that
-            signum(y) * FRAC_PI_2
+            FRAC_PI_2.copy_sign(y)
         }
-    } else if abs(y) == INFINITY && abs(x) == INFINITY {
+    } else if y.abs() == INFINITY && x.abs() == INFINITY {
         // x and y are both infinite, meaning: not NaN, can't be
         // divided, and the answer is statically obvious (some
         // multiple of PI/4).
         flip_sign_nonnan(y, FRAC_PI_2 - flip_sign_nonnan(x, FRAC_PI_4))
     } else {
         // Either one x or y is NaN (propogates through atan_raw
-        // properly), or abs(y) >= abs(x) (meaning |r| = |y / x| >=
-        // 1). Use `atan(1/r) == sign(r) * pi / 2 - atan(r)`, but
-        // inline the 0 or PI `x` bias.
+        // properly), or |y| >= |x| (meaning |r| = |y / x| >= 1). Use
+        // `atan(1/r) == sign(r) * pi / 2 - atan(r)`, but inline the 0
+        // or PI `x` bias.
         flip_sign_nonnan(y, FRAC_PI_2) - atan_raw(x / y)
     }
 }
@@ -71,6 +73,7 @@ mod tests {
     use super::*;
     use quickcheck as qc;
     use std::f32 as f;
+    use ieee754::Ieee754;
 
     /// Maximal absolute error according to paper.
     const TOL: f32 = 0.0038;
@@ -119,7 +122,7 @@ mod tests {
     fn atan_denormals() {
         fn prop(x: u8, y: u16) -> bool {
             let signif = ((x as u32) << 16) | (y as u32);
-            let mut x = ::float::recompose(0, 1, signif);
+            let mut x = f32::recompose_raw(false, 1, signif);
 
             for _ in 0..23 {
                 assert!(x > 0.0);

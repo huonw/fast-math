@@ -27,6 +27,7 @@
 #![no_std]
 #[cfg(test)] extern crate quickcheck;
 #[cfg(test)] #[macro_use] extern crate std;
+extern crate ieee754;
 
 pub use log::{log2, log2_raw};
 pub use atan::{atan_raw, atan, atan2};

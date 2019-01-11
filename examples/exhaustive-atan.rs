@@ -10,8 +10,7 @@ fn main() {
             } else {
                 let e = fast_math::atan_raw(x);
                 let t = x.atan();
-                let diff = (e - t).abs();
-                (diff, diff / t)
+                ((e - t).abs(), e.rel_error(t).abs())
             }
         })
         .fold((0_f32, 0_f32), |(a, a_), (b, b_)| (a.max(b), a_.max(b_)));
@@ -27,8 +26,7 @@ fn main() {
             } else {
                 let e = fast_math::atan(x);
                 let t = x.atan();
-                let diff = (e - t).abs();
-                (diff, diff / t)
+                ((e - t).abs(), e.rel_error(t).abs())
             }
         })
         .fold((0_f32, 0_f32), |(a, a_), (b, b_)| (a.max(b), a_.max(b_)));

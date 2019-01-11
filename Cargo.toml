@@ -13,10 +13,11 @@ description = """
 Fast, approximate versions of mathematical functions. Includes `log2`.
 """
 
+[dependencies]
+ieee754 = "0.2.6"
 
 [dev-dependencies]
 quickcheck = "0.7"
-ieee754 = "0.2"
 criterion = "0.2"
 
 [features]

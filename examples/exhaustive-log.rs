@@ -10,7 +10,7 @@ fn main() {
             let e = fast_math::log2_raw(x);
             let t = x.log2();
             let diff = (e - t).abs();
-            (diff, diff / t)
+            (diff, e.rel_error(t).abs())
         })
         .fold((0_f32, 0_f32), |(a, a_), (b, b_)| (a.max(b), a_.max(b_)));
 
