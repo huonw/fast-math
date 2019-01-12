@@ -109,6 +109,26 @@ fn bench_atan(c: &mut Criterion) {
     bench(c, "atan", values, &fast_math::atan, &fast_math::atan_raw, &f32::atan)
 }
 
+fn bench_exp(c: &mut Criterion) {
+    let values = &[
+        40.0 * 0.85708036, 40.0 * -2.43390621, 40.0 * 2.80163358, 40.0 * -2.55126348, 40.0 * 3.18046186,
+        40.0 * -2.88689427, 40.0 * 0.32215155, 40.0 * -0.07701401, 40.0 * 1.22922506, 40.0 * -0.4580259,
+        40.0 * 0.01257442, 40.0 * -4.23107197, 40.0 * 0.89538113, 40.0 * -1.65219582, 40.0 * 0.14632742,
+        40.0 * -1.68663984, 40.0 * 1.88125115, 40.0 * -2.16773942, 40.0 * 1.27461936, 40.0 * -1.03091265
+    ];
+    bench(c, "exp", values, &fast_math::exp, &fast_math::exp_raw, &f32::exp)
+}
+
+fn bench_exp2(c: &mut Criterion) {
+    let values = &[
+        60.0 * 0.85708036, 60.0 * -2.43390621, 60.0 * 2.80163358, 60.0 * -2.55126348, 60.0 * 3.18046186,
+        60.0 * -2.88689427, 60.0 * 0.32215155, 60.0 * -0.07701401, 60.0 * 1.22922606, 60.0 * -0.4580259,
+        60.0 * 0.01257442, 60.0 * -4.23107197, 60.0 * 0.89538113, 60.0 * -1.65219582, 60.0 * 0.14632742,
+        60.0 * -1.68663984, 60.0 * 1.88125115, 60.0 * -2.16773942, 60.0 * 1.27461936, 60.0 * -1.03091265
+    ];
+    bench(c, "exp2", values, &fast_math::exp2, &fast_math::exp2_raw, &f32::exp2)
+}
+
 fn bench_atan2(c: &mut Criterion) {
     let baseline = Fun::new(
         "baseline",
@@ -138,5 +158,5 @@ fn bench_atan2(c: &mut Criterion) {
     c.bench_functions("scalar/atan2", vec![baseline, full, std], values);
 }
 
-criterion_group!(benches, bench_log2, bench_atan, bench_atan2);
+criterion_group!(benches, bench_log2, bench_exp, bench_exp2, bench_atan, bench_atan2);
 criterion_main!(benches);
