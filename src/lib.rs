@@ -28,7 +28,7 @@
 #![cfg_attr(all(test, feature = "unstable"), feature(test))]
 #[cfg(test)] extern crate quickcheck;
 #[cfg(all(test, feature = "unstable"))] extern crate test;
-#[cfg(test)] #[cfg_attr(test, macro_use)] extern crate std;
+#[cfg(test)] #[macro_use] extern crate std;
 
 pub use log::{log2, log2_raw};
 pub use atan::{atan_raw, atan, atan2};
