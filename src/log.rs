@@ -42,7 +42,7 @@ fn log2_exp_0(signif: u32) -> f32 {
         f::NEG_INFINITY
     } else {
         // denormal
-        let zeros = signif.leading_zeros() - 9;
+        let zeros = signif.leading_zeros() - 9 + 1;
         -126.0 - zeros as f32 + log2(f32::recompose_raw(false, 127, signif << zeros))
     }
 }
@@ -105,7 +105,7 @@ mod tests {
                 let t = x.log2();
                 let rel = e.rel_error(t).abs();
                 if rel > max { max = rel }
-                assert!(rel < 0.025,
+                assert!(rel < 0.025 && (e - t).abs() < 0.009,
                         "{:.8}: {:.8}, {:.8}. {:.4}", x, e, t, rel);
             }
         }
@@ -119,6 +119,7 @@ mod tests {
         assert!(log2(f::NEG_INFINITY).is_nan());
         assert_eq!(log2(f::INFINITY), f::INFINITY);
         assert_eq!(log2(0.0), f::NEG_INFINITY);
+        assert_eq!(log2(f32::recompose_raw(false, 0, 1)), -149.0);
     }
 
     #[test]
@@ -132,7 +133,7 @@ mod tests {
                 let log = x.log2();
                 let e = log2(x);
                 let rel = e.rel_error(log).abs();
-                if rel >= 0.025 {
+                if rel >= 0.025 || (e - log).abs() > 0.009 {
                     return false
                 }
 
