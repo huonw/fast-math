@@ -9,8 +9,9 @@ documentation = "https://docs.rs/fast-math"
 license = "MIT/Apache-2.0"
 keywords = ["approximation", "relative-error", "mathematics","performance"]
 
+readme = "README.md"
 description = """
-Fast, approximate versions of mathematical functions. Includes `log2`.
+Fast, approximate versions of mathematical functions.
 """
 
 [dependencies]
