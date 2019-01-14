@@ -50,6 +50,7 @@ mod tests {
     use super::*;
     use quickcheck as qc;
     use std::f32 as f;
+    use ieee754::Ieee754;
 
     /// Maximal absolute error.
     const TOL: f32 = 0.0001;
@@ -103,7 +104,7 @@ mod tests {
     fn tanh_denormals() {
         fn prop(x: u8, y: u16) -> bool {
             let signif = ((x as u32) << 16) | (y as u32);
-            let mut x = ::float::recompose(0, 1, signif);
+            let mut x = f32::recompose_raw(false, 1, signif);
 
             for _ in 0..23 {
                 {
@@ -134,7 +135,7 @@ mod tests {
     fn tanh_raw_denormals() {
         fn prop(x: u8, y: u16) -> bool {
             let signif = ((x as u32) << 16) | (y as u32);
-            let mut x = ::float::recompose(0, 1, signif);
+            let mut x = f32::recompose_raw(false, 1, signif);
 
             for _ in 0..23 {
                 let e = tanh_raw(x);
