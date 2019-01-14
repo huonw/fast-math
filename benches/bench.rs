@@ -158,5 +158,15 @@ fn bench_atan2(c: &mut Criterion) {
     c.bench_functions("scalar/atan2", vec![baseline, full, std], values);
 }
 
-criterion_group!(benches, bench_log2, bench_exp, bench_exp2, bench_atan, bench_atan2);
+fn bench_tanh(c: &mut Criterion) {
+    let values = &[
+        0.85708036,  -2.43390621,  2.80163358,  -2.55126348,  3.18046186,
+        -2.88689427,  0.32215155,  -0.07701401,  1.22922506,  -0.4580259,
+        0.01257442,  -4.23107197,  0.89538113,  -1.65219582,  0.14632742,
+        -1.68663984,  1.88125115,  -2.16773942,  1.27461936,  -1.03091265
+    ];
+    bench(c, "tanh", values, &fast_math::tanh, &fast_math::tanh_raw, &f32::tanh)
+}
+
+criterion_group!(benches, bench_log2, bench_exp, bench_exp2, bench_atan, bench_atan2, bench_tanh);
 criterion_main!(benches);
