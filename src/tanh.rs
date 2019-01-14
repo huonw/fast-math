@@ -22,7 +22,7 @@ pub fn tanh_raw(x: f32) -> f32 {
 
 /// Compute a fast approximation of the hyperbolic tangent of `x`.
 ///
-/// See `atanh_raw` for a faster version that may return incorrect results for
+/// See `tanh_raw` for a faster version that may return incorrect results for
 /// large `|x|` and `nan`.
 #[inline]
 pub fn tanh(x: f32) -> f32 {
