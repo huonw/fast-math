@@ -142,7 +142,8 @@ mod tests {
                     if t.classify() == num::FpCategory::Subnormal {
                         // subnormal should be approximately right
                         assert!(rel <= 1.0,
-                                "{:.8}: e = {:.8e}, t = {:.8e}. {:.4}", x, e, t, rel);                  } else {
+                                "{:.8}: e = {:.8e}, t = {:.8e}. {:.4}", x, e, t, rel);
+                    } else {
                         if rel > max { max = rel }
                         // e == t handles the infinity case
                         assert!(rel <= 0.002,
@@ -167,7 +168,8 @@ mod tests {
                     if t.classify() == num::FpCategory::Subnormal {
                         // subnormal should be approximately right
                         assert!(rel <= 1.0,
-                                "{:.8}: e = {:.8e}, t = {:.8e}. {:.4}", x, e, t, rel);                  } else {
+                                "{:.8}: e = {:.8e}, t = {:.8e}. {:.4}", x, e, t, rel);
+                    } else {
                         if rel > max { max = rel }
                         // e == t handles the infinity case
                         assert!(rel <= 0.002,
