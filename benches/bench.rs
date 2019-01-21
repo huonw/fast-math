@@ -34,7 +34,7 @@ where
         });
 
     c.bench_functions(&format!("scalar/{}", name),
-                      vec![scalar_baseline, scalar_full, scalar_raw, scalar_std],
+                      vec![scalar_baseline, scalar_raw, scalar_full, scalar_std],
                       values);
 
     let vector_baseline = Fun::new(
@@ -84,7 +84,7 @@ where
         });
 
     c.bench_functions(&format!("vector/{}", name),
-                      vec![vector_baseline, vector_full, vector_raw, vector_std],
+                      vec![vector_baseline, vector_raw, vector_full, vector_std],
                       values);
 }
 
