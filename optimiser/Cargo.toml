@@ -1,0 +1,12 @@
+[package]
+name = "optimiser"
+version = "0.1.0"
+authors = ["Huon Wilson <wilson.huon@gmail.com>"]
+edition = "2018"
+publish = false # internal implementation detail
+
+[dependencies]
+ieee754 = "0.2"
+fast-math = { path = ".." }
+optimize = { git = "https://github.com/to266/optimize" }
+ndarray = "0.11"

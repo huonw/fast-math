@@ -27,3 +27,9 @@ unstable = []
 [[bench]]
 name = "bench"
 harness = false
+
+[workspace]
+
+members = [
+  "optimiser",
+]
