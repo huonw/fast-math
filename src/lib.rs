@@ -32,6 +32,7 @@ extern crate ieee754;
 pub use log::{log2, log2_raw};
 pub use atan::{atan_raw, atan, atan2};
 pub use exp::{exp_raw, exp2_raw, exp, exp2};
+pub use exp::{exp_m1_raw, exp_m1, exp2_m1_raw, exp2_m1};
 
 mod log;
 mod atan;

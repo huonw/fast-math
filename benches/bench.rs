@@ -4,6 +4,8 @@ extern crate fast_math;
 extern crate criterion;
 use criterion::{Criterion, Fun, black_box};
 
+use std::f32::consts::LN_2;
+
 fn bench<Fast, Raw, Std>(c: &mut Criterion, name: &str, values: &'static [f32],
                          fast: &'static Fast, raw: &'static Raw, std: &'static Std)
 where
@@ -129,6 +131,29 @@ fn bench_exp2(c: &mut Criterion) {
     bench(c, "exp2", values, &fast_math::exp2, &fast_math::exp2_raw, &f32::exp2)
 }
 
+fn bench_exp_m1(c: &mut Criterion) {
+    let values = &[
+        1.0 * 0.85708036, 1.0 * -2.43390621, 1.0 * 2.80163358, 1.0 * -2.55126348, 1.0 * 3.18046186,
+        1.0 * -2.88689427, 1.0 * 0.32215155, 1.0 * -0.07701401, 1.0 * 1.22922506, 1.0 * -0.4580259,
+        1.0 * 0.01257442, 1.0 * -4.23107197, 1.0 * 0.89538113, 1.0 * -1.65219582, 1.0 * 0.14632742,
+        1.0 * -1.68663984, 1.0 * 1.88125115, 1.0 * -2.16773942, 1.0 * 1.27461936, 1.0 * -1.03091265
+    ];
+    bench(c, "exp_m1", values, &fast_math::exp_m1, &fast_math::exp_m1_raw, &f32::exp_m1)
+}
+
+fn bench_exp2_m1(c: &mut Criterion) {
+    let values = &[
+        1.0 * 0.85708036, 1.0 * -2.43390621, 1.0 * 2.80163358, 1.0 * -2.55126348, 1.0 * 3.18046186,
+        1.0 * -2.88689427, 1.0 * 0.32215155, 1.0 * -0.07701401, 1.0 * 1.22922606, 1.0 * -0.4580259,
+        1.0 * 0.01257442, 1.0 * -4.23107197, 1.0 * 0.89538113, 1.0 * -1.65219582, 1.0 * 0.14632742,
+        1.0 * -1.68663984, 1.0 * 1.88125115, 1.0 * -2.16773942, 1.0 * 1.27461936, 1.0 * -1.03091265
+    ];
+    fn exp2_m1(x: f32) -> f32 {
+        (x * LN_2).exp_m1()
+    }
+    bench(c, "exp2_m1", values, &fast_math::exp2_m1, &fast_math::exp2_m1_raw, &exp2_m1)
+}
+
 fn bench_atan2(c: &mut Criterion) {
     let baseline = Fun::new(
         "baseline",
@@ -158,5 +183,6 @@ fn bench_atan2(c: &mut Criterion) {
     c.bench_functions("scalar/atan2", vec![baseline, full, std], values);
 }
 
-criterion_group!(benches, bench_log2, bench_exp, bench_exp2, bench_atan, bench_atan2);
+criterion_group!(benches, bench_log2, bench_exp, bench_exp2, bench_exp_m1, bench_exp2_m1,
+                 bench_atan, bench_atan2);
 criterion_main!(benches);

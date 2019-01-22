@@ -106,6 +106,7 @@ fn main() {
             "atan" => run(problems::Atan, n),
             "exp" => run(problems::Exp, n),
             "exp2" => run(problems::Exp2, n),
+            "exp_m1" => run(problems::ExpM1, n),
             "log2" => run(problems::Log2, n),
             s => panic!("unknown argument '{}'", s),
         }

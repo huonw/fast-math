@@ -85,6 +85,41 @@ impl Approximation for Exp2 {
     }
 }
 
+pub struct ExpM1;
+impl Approximation for ExpM1 {
+    fn name() -> &'static str { "exp_m1" }
+
+    const NUM_PARAMS: usize = 3;
+    fn ranges() -> Vec<(f32, f32, Option<f32>)> {
+        vec![(0.0, 1.0, Some(0.2)),
+             (0.0, 2.0, Some(1.0)),
+             (0.0, 1.0, Some(0.5))]
+    }
+
+    const MIN: f32 = -1.0;
+    const MAX: f32 = 1.0;
+    fn exact_test_values() -> Vec<f32> {
+        vec![0.0]
+    }
+
+    fn exact(x: f64) -> f64 {
+        x.exp_m1()
+    }
+    fn approx(x: f32, params: ArrayView1<f64>) -> f32 {
+        assert_eq!(params.len(), Self::NUM_PARAMS);
+        let limit = params[0] as f32;
+        let add = params[1] as f32;
+        let mul = params[2] as f32;
+
+        let value = if x.abs() <= limit {
+            x * (add + mul * x)
+        } else {
+            fast_math::exp(x) - 1.0
+        };
+        value
+    }
+}
+
 pub struct Log2;
 impl Approximation for Log2 {
     fn name() -> &'static str { "log2" }
