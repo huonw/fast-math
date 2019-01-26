@@ -2,6 +2,7 @@ use ndarray::prelude::*;
 use crate::Approximation;
 use ieee754::Ieee754;
 use std::f32::{self, consts};
+use std::f64;
 
 pub struct Exp;
 impl Approximation for Exp {
@@ -153,6 +154,38 @@ impl Approximation for Log2 {
         let a: f32 = params[0] as f32;
         let b: f32 = params[1] as f32;
         add_exp as f32 + normalised * (b + a * normalised)
+    }
+}
+
+pub struct Log2_1p;
+impl Approximation for Log2_1p {
+    fn name() -> &'static str { "log2_1p" }
+
+    const NUM_PARAMS: usize = 1;
+    fn ranges() -> Vec<(f32, f32, Option<f32>)> {
+        vec![(0.0, 1.0, Some(1.0))]
+    }
+
+    const MIN: f32 = -0.99999994;
+    const MAX: f32 = 1.0;
+    fn exact_test_values() -> Vec<f32> {
+        vec![-0.015, -1e-30, 0.0, 1e-30, 0.015, 1.0]
+    }
+
+    fn exact(x: f64) -> f64 {
+        x.ln_1p() * f64::consts::LOG2_E
+    }
+
+    fn approx(x: f32, params: ArrayView1<f64>) -> f32 {
+        assert_eq!(params.len(), Self::NUM_PARAMS);
+        let limit = params[0] as f32;
+
+        let value = if x.abs() <= limit {
+            x * f32::consts::LOG2_E
+        } else {
+            fast_math::log2(1.0 + x)
+        };
+        value
     }
 }
 

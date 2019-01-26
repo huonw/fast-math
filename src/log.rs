@@ -75,11 +75,48 @@ pub fn log2_raw(x: f32) -> f32 {
     add_exp as f32 + normalised * (B + A * normalised)
 }
 
+const LOG2_1P_LIMIT: f32 = 0.04277497;
+/// Compute a fast approximation of the base-2 logarithm of `1 + x`
+/// for -1 < `x` < ∞.
+///
+/// This will return unspecified nonsense if `x` is doesn't not
+/// satisfy those constraints. Use `log2_1p` if correct handling is
+/// required (at the expense of some speed).
+///
+/// The maximum relative error across all valid input is less than
+/// 0.022. The maximum absolute error is less than 0.009.
+#[inline]
+pub fn log2_1p(x: f32) -> f32 {
+    if x.abs() < LOG2_1P_LIMIT {
+        x * f::consts::LOG2_E
+    } else {
+        log2(1.0 + x)
+    }
+}
+
+/// Compute a fast approximation of the base-2 logarithm of `1 + x`
+/// for -1 < `x` < ∞.
+///
+/// This will return unspecified nonsense if `x` is doesn't not
+/// satisfy those constraints. Use `log2_1p` if correct handling is
+/// required (at the expense of some speed).
+///
+/// The maximum relative error across all valid input is less than
+/// 0.022. The maximum absolute error is less than 0.009.
+#[inline]
+pub fn log2_1p_raw(x: f32) -> f32 {
+    if x.abs() < LOG2_1P_LIMIT {
+        x * f::consts::LOG2_E
+    } else {
+        log2_raw(1.0 + x)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use quickcheck as qc;
-    use std::f32 as f;
+    use std::{f32 as f, f64};
     use ieee754::Ieee754;
 
     #[test]
@@ -113,7 +150,7 @@ mod tests {
     }
 
     #[test]
-    fn edge_cases() {
+    fn log2_edge_cases() {
         assert!(log2(f::NAN).is_nan());
         assert!(log2(-1.0).is_nan());
         assert!(log2(f::NEG_INFINITY).is_nan());
@@ -123,7 +160,7 @@ mod tests {
     }
 
     #[test]
-    fn denormals() {
+    fn log2_denormals() {
         fn prop(x: u8, y: u16) -> bool {
             let signif = ((x as u32) << 16) | (y as u32);
             let mut x = f32::recompose_raw(false, 1, signif);
@@ -142,5 +179,54 @@ mod tests {
             true
         }
         qc::quickcheck(prop as fn(u8, u16) -> bool)
+    }
+
+    fn exact_log2_1p(x: f32) -> f32 {
+        ((x as f64).ln_1p() * f64::consts::LOG2_E) as f32
+    }
+    #[test]
+    fn log2_1p_rel_err_qc() {
+        fn prop(x: f32) -> qc::TestResult {
+            if !(x > 1.0) { return qc::TestResult::discard() }
+
+            let e = log2_1p(x);
+            let t = exact_log2_1p(x);
+
+            qc::TestResult::from_bool(e.rel_error(t).abs() < 0.025)
+        }
+        qc::quickcheck(prop as fn(f32) -> qc::TestResult)
+    }
+
+    #[test]
+    fn log2_1p_rel_err_exhaustive() {
+        let mut max = 0.0;
+        for i in 0..PREC + 1 {
+            for &sign in &[-1.0, 1.0] {
+                let upper = if sign > 0.0 { 6 } else { 0 };
+                for j in -5..upper {
+                    let x = sign * (1.0 + i as f32 / PREC as f32) * 2f32.powi(j * 20);
+                    let e = log2_1p(x);
+                    let t = exact_log2_1p(x);
+                    let rel = e.rel_error(t).abs();
+                    if rel > max { max = rel }
+                    assert!(rel < 0.025 && (e - t).abs() < 0.009,
+                            "{:.8}: {:.8}, {:.8}. {:.4}", x, e, t, rel);
+                }
+            }
+        }
+        println!("maximum {}", max);
+    }
+
+    #[test]
+    fn log2_1p_edge_cases() {
+        assert!(log2_1p(f::NAN).is_nan());
+        assert!(log2_1p(f::NEG_INFINITY).is_nan());
+        assert!(log2_1p(-2.0).is_nan());
+        assert_eq!(log2_1p(-1.0), f::NEG_INFINITY);
+        assert_eq!(log2_1p(0.0), 0.0);
+        let denormal = f32::recompose_raw(false, 0, 1);
+        assert_eq!(log2_1p(denormal), denormal);
+        assert_eq!(log2_1p(1.0), 1.0);
+        assert_eq!(log2_1p(f::INFINITY), f::INFINITY);
     }
 }

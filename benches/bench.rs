@@ -4,7 +4,7 @@ extern crate fast_math;
 extern crate criterion;
 use criterion::{Criterion, Fun, black_box};
 
-use std::f32::consts::LN_2;
+use std::f32::consts::{LN_2, LOG2_E};
 
 fn bench<Fast, Raw, Std>(c: &mut Criterion, name: &str, values: &'static [f32],
                          fast: &'static Fast, raw: &'static Raw, std: &'static Std)
@@ -100,6 +100,18 @@ fn bench_log2(c: &mut Criterion) {
     ];
     bench(c, "log2", values, &fast_math::log2, &fast_math::log2_raw, &f32::log2)
 }
+fn bench_log2_1p(c: &mut Criterion) {
+    let values = &[
+        -0.85708036,  2.43390621,  2.80163358,  2.55126348,  3.18046186,
+        2.88689427,  0.32215155,  -0.07701401,  1.22922506,  -0.4580259 ,
+        0.01257442,  4.23107197,  0.89538113,  1.65219582,  0.14632742,
+        1.68663984,  1.88125115,  2.16773942,  1.27461936,  -0.03091265
+    ];
+    fn log2_1p(x: f32) -> f32 {
+        x.ln_1p() * LOG2_E
+    }
+    bench(c, "log2_1p", values, &fast_math::log2_1p, &fast_math::log2_1p_raw, &log2_1p)
+}
 
 fn bench_atan(c: &mut Criterion) {
     let values = &[
@@ -183,6 +195,7 @@ fn bench_atan2(c: &mut Criterion) {
     c.bench_functions("scalar/atan2", vec![baseline, full, std], values);
 }
 
-criterion_group!(benches, bench_log2, bench_exp, bench_exp2, bench_exp_m1, bench_exp2_m1,
+criterion_group!(benches, bench_log2, bench_log2_1p,
+                 bench_exp, bench_exp2, bench_exp_m1, bench_exp2_m1,
                  bench_atan, bench_atan2);
 criterion_main!(benches);

@@ -90,6 +90,7 @@ fn run<A: Approximation>(_a: A, num_test_values: usize) {
             let exact = test_values.iter().map(|x| A::exact(*x as f64));
 
             let (rel, _abs) = max_errors(approx, exact);
+            println!("{} {}", view, rel);
             rel
         };
         let result = minimizer.minimize(&func, guesses.column(2));
@@ -108,6 +109,8 @@ fn main() {
             "exp2" => run(problems::Exp2, n),
             "exp_m1" => run(problems::ExpM1, n),
             "log2" => run(problems::Log2, n),
+            "log2_1p" => run(problems::Log2_1p, n),
+            "log_1p" => run(problems::Log_1p, n),
             s => panic!("unknown argument '{}'", s),
         }
     }
