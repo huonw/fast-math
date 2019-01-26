@@ -43,7 +43,7 @@ fn log2_exp_0(signif: u32) -> f32 {
     } else {
         // denormal
         let zeros = signif.leading_zeros() - 9 + 1;
-        -126.0 - zeros as f32 + log2(f32::recompose_raw(false, 127, signif << zeros))
+        -126.0 - (zeros as f32) + log2(f32::recompose_raw(false, 127, signif << zeros))
     }
 }
 
