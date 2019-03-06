@@ -52,23 +52,27 @@ mod tests {
     use ieee754::Ieee754;
 
     /// Maximal absolute error.
-    const TOL: f32 = 0.0001;
+    const TOL_ABS: f32 = 0.0001;
+
+    /// Maximal relative error.
+    const TOL_REL: f32 = 0.0001;
 
     #[test]
-    fn tanh_abs_err_qc() {
+    fn tanh_err_qc() {
         fn prop(x: f32) -> qc::TestResult {
             let e = tanh(x);
             let t = x.tanh();
             let abs = (e - t).abs();
+            let rel = e.rel_error(t).abs();
 
-            qc::TestResult::from_bool(abs < TOL)
+            qc::TestResult::from_bool(abs < TOL_ABS && rel < TOL_REL)
         }
         qc::quickcheck(prop as fn(f32) -> qc::TestResult)
     }
 
     const PREC: u32 = 1 << 20;
     #[test]
-    fn tanh_abs_err_exhaustive() {
+    fn tanh_err_exhaustive() {
         for i in 0..PREC + 1 {
             for j in -5..6 {
                 let x = (1.0 + i as f32 / PREC as f32) * 2f32.powi(j * 20);
@@ -76,17 +80,23 @@ mod tests {
                     let e = tanh(x);
                     let t = x.tanh();
                     let abs = (e - t).abs();
+                    let rel = e.rel_error(t).abs();
 
-                    assert!(abs < TOL,
+                    assert!(abs < TOL_ABS,
                             "{:.8}: {:.8}, {:.8}. {:.4}", x, e, t, abs);
+                    assert!(rel < TOL_REL,
+                            "{:.8}: {:.8}, {:.8}. {:.4}", x, e, t, rel);
                 }
                 {
                     let e = tanh(-x);
                     let t = (-x).tanh();
                     let abs = (e - t).abs();
+                    let rel = e.rel_error(t).abs();
 
-                    assert!(abs < TOL,
+                    assert!(abs < TOL_ABS,
                             "{:.8}: {:.8}, {:.8}. {:.4}", -x, e, t, abs);
+                    assert!(rel < TOL_REL,
+                            "{:.8}: {:.8}, {:.8}. {:.4}", x, e, t, rel);
                 }
             }
         }
@@ -110,7 +120,8 @@ mod tests {
                     let e = tanh(x);
                     let t = x.tanh();
                     let abs = (e - t).abs();
-                    if abs >= TOL {
+                    let rel = e.rel_error(t).abs();
+                    if abs >= TOL_ABS && rel >= TOL_REL {
                         return false
                     }
                 }
@@ -118,7 +129,8 @@ mod tests {
                     let e = tanh(-x);
                     let t = (-x).tanh();
                     let abs = (e - t).abs();
-                    if abs >= TOL {
+                    let rel = e.rel_error(t).abs();
+                    if abs >= TOL_ABS && rel >= TOL_REL {
                         return false
                     }
                 }
@@ -140,7 +152,8 @@ mod tests {
                 let e = tanh_raw(x);
                 let t = x.tanh();
                 let abs = (e - t).abs();
-                if abs >= TOL {
+                let rel = e.rel_error(t).abs();
+                if abs >= TOL_ABS && rel >= TOL_REL {
                     return false
                 }
 
