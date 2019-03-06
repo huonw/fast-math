@@ -1,3 +1,5 @@
+use ieee754::Ieee754;
+
 /// Calculate the numerator of the `tanh` approximation.
 fn a(x: f32) -> f32 {
     let x2 = x * x;
@@ -32,15 +34,12 @@ pub fn tanh(x: f32) -> f32 {
 
     let a = a(x);
     if !a.is_finite() {
-        return if a < 0. { -1. } else { 1. };
+        return 1_f32.copy_sign(a);
     }
 
     let result = a / b(x);
-    if result > 1. {
-        return 1.;
-    }
-    if result < -1. {
-        return -1.;
+    if result.abs() > 1. {
+        return 1_f32.copy_sign(result);
     }
     result
 }
